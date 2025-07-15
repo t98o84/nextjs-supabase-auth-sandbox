@@ -1,0 +1,26 @@
+services:
+  # Development service - for local development with hot reloading
+  web:
+    build:
+      context: .
+      dockerfile: docker/nodejs/Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    develop:
+      watch:
+        - action: restart
+          path: ./.env
+        - action: rebuild
+          path: ./web/package.json
+        - action: sync
+          path: ./web
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
