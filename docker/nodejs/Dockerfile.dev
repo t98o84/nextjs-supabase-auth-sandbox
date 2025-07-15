@@ -1,0 +1,26 @@
+# Development Dockerfile for Next.js with hot reloading
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Create a non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Install dependencies first (for better caching)
+COPY web/package*.json ./
+RUN npm install
+
+# Change ownership to nextjs user
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Expose the port Next.js runs on
+EXPOSE 3000
+
+ENV PORT=3000
+ENV NODE_ENV=development
+
+# Start the development server with hot reloading
+CMD ["npx", "next", "dev", "--hostname", "0.0.0.0"]

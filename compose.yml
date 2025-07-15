@@ -1,6 +1,28 @@
-version: '3.8'
-
 services:
+  # Development service - for local development with hot reloading
+  nextjs-dev:
+    build:
+      context: .
+      dockerfile: docker/nodejs/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+      - /app/.next
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./web
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
+
+  # Production service - for production builds
   nextjs:
     build:
       context: .

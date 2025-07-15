@@ -31,7 +31,19 @@ project root
 
 ## Getting Started
 
-### Development
+### Development with Docker (Recommended)
+
+1. **Start development server in Docker:**
+   ```bash
+   docker compose up nextjs-dev --build
+   ```
+
+2. **Open your browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+The development server runs inside a Docker container with hot reloading enabled. Any changes to your code will automatically reload the application.
+
+### Development on Host OS (Alternative)
 
 1. **Install dependencies:**
    ```bash
@@ -49,9 +61,9 @@ project root
 
 ### Production with Docker
 
-1. **Build and run with Docker Compose:**
+1. **Build and run production build:**
    ```bash
-   docker compose up --build
+   docker compose up nextjs --build
    ```
 
 2. **Access the application:**
@@ -78,7 +90,14 @@ In the `web` directory:
 
 ## Docker Commands
 
-- `docker compose up` - Start services
-- `docker compose up --build` - Rebuild and start services
-- `docker compose down` - Stop services
-- `docker compose logs` - View logs
+### Development
+- `docker compose up nextjs-dev --build` - Start development server in container
+- `docker compose down` - Stop development server
+
+### Production  
+- `docker compose up nextjs --build` - Start production server in container
+- `docker compose down` - Stop production server
+
+### General
+- `docker compose logs nextjs-dev` - View development logs
+- `docker compose logs nextjs` - View production logs
