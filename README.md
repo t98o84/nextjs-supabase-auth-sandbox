@@ -7,6 +7,7 @@ A Next.js application with Docker setup, featuring App Router and Zod validation
 - **Docker Compose**: Container orchestration
 - **npm**: Package manager
 - **Next.js**: React framework with App Router
+- **Supabase**: Backend-as-a-Service with authentication and database
 - **Zod**: TypeScript-first schema validation
 - **TypeScript**: Type safety
 - **Tailwind CSS**: Utility-first CSS framework
@@ -21,12 +22,18 @@ project root
   │   ├── src/
   │   │   ├── app/           # App Router pages
   │   │   └── lib/           # Utility libraries
+  │   │       ├── supabase/  # Supabase client utilities
+  │   │       └── schemas.ts # Zod schemas
   │   ├── public/            # Static assets
+  │   ├── .env.local         # Environment variables
   │   └── package.json       # Node.js dependencies
+  ├── supabase/              # Supabase configuration
+  │   └── config.toml        # Local development settings
   ├── docker/
   │   └── nodejs/
   │       └── Dockerfile     # Docker configuration
-  └── compose.yml            # Docker Compose configuration
+  ├── compose.yml            # Docker Compose configuration
+  └── SUPABASE_SETUP.md      # Supabase setup guide
 ```
 
 ## Getting Started
@@ -59,6 +66,22 @@ The development server runs inside a Docker container with hot reloading enabled
 3. **Open your browser:**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
+### Supabase Local Development
+
+For full Supabase functionality, start the local Supabase stack:
+
+```bash
+npx supabase start
+```
+
+This provides:
+- Local PostgreSQL database
+- Authentication service
+- Storage service
+- Dashboard UI at http://127.0.0.1:54323
+
+See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed setup instructions.
+
 ### Production with Docker
 
 1. **Build and run production build:**
@@ -75,6 +98,8 @@ The development server runs inside a Docker container with hot reloading enabled
 - ✅ TypeScript configuration
 - ✅ Tailwind CSS for styling
 - ✅ Zod schema validation
+- ✅ Supabase integration (@supabase/supabase-js@2.51.0, @supabase/ssr@0.6.1)
+- ✅ Supabase CLI configuration for local development
 - ✅ Docker containerization
 - ✅ ESLint configuration
 - ✅ Production-ready build
