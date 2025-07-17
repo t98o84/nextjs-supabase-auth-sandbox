@@ -35,7 +35,7 @@ project root
 
 1. **Start development server in Docker:**
    ```bash
-   docker compose up nextjs-dev --build
+   docker compose up web --build
    ```
 
 2. **Open your browser:**

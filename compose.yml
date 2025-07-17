@@ -1,9 +1,9 @@
 services:
   # Development service - for local development with hot reloading
-  nextjs-dev:
+  web:
     build:
       context: .
-      dockerfile: docker/nodejs/Dockerfile.dev
+      dockerfile: docker/nodejs/Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -15,20 +15,11 @@ services:
     restart: unless-stopped
     develop:
       watch:
+        - action: rebuild
+          path: package.json
         - action: sync
           path: ./web
           target: /app
           ignore:
             - node_modules/
             - .next/
-
-  # Production service - for production builds
-  nextjs:
-    build:
-      context: .
-      dockerfile: docker/nodejs/Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    restart: unless-stopped
