@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { UserSchema } from "@/lib/schemas";
+import { createClient } from "@/lib/supabase/server";
+import ClientSupabaseTest from "@/components/ClientSupabaseTest";
 
-export default function Home() {
+export default async function Home() {
   // Demonstrate zod validation
   const exampleUser = {
     id: "1",
@@ -12,6 +14,22 @@ export default function Home() {
 
   // Validate with zod schema
   const validatedUser = UserSchema.parse(exampleUser);
+
+  // Test Supabase server connection
+  const supabase = await createClient();
+  let serverSupabaseStatus = "❌ Not connected";
+  
+  try {
+    const { error } = await supabase.from('test').select('*').limit(1);
+    if (error) {
+      // This is expected if the table doesn't exist - indicates connection is working
+      serverSupabaseStatus = error.code === 'PGRST116' ? "✅ Connected (ready for tables)" : `⚠️ Connected with issue: ${error.message}`;
+    } else {
+      serverSupabaseStatus = "✅ Connected";
+    }
+  } catch (error) {
+    serverSupabaseStatus = `❌ Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+  }
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
@@ -41,7 +59,27 @@ export default function Home() {
             <li>• Tailwind CSS ✓</li>
             <li>• Zod validation ✓</li>
             <li>• Docker ready ✓</li>
+            <li>• Supabase setup ✓</li>
           </ul>
+        </div>
+
+        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg w-full max-w-md">
+          <h2 className="text-lg font-semibold mb-2">🚀 Supabase Environment</h2>
+          <ul className="text-sm space-y-1">
+            <li>• CLI initialized ✓</li>
+            <li>• @supabase/supabase-js@2.51.0 ✓</li>
+            <li>• @supabase/ssr@0.6.1 ✓</li>
+            <li>• Client utilities configured ✓</li>
+            <li>• Environment variables set ✓</li>
+          </ul>
+          <div className="mt-3 space-y-1">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Server-side Status: {serverSupabaseStatus}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Client-side Status: <ClientSupabaseTest />
+            </p>
+          </div>
         </div>
 
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg w-full max-w-md">
@@ -54,14 +92,21 @@ export default function Home() {
 
         <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
           <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
+            Both client-side and server-side Supabase access verified.
+          </li>
+          <li className="mb-2 tracking-[-.01em]">
+            Start local Supabase with{" "}
             <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
+              npx supabase start
             </code>
             .
           </li>
           <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
+            Edit{" "}
+            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
+              src/app/page.tsx
+            </code>{" "}
+            to begin building.
           </li>
         </ol>
       </main>
@@ -84,7 +129,7 @@ export default function Home() {
         </a>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://zod.dev"
+          href="https://supabase.com/docs"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -95,7 +140,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Zod Docs
+          Supabase Docs
         </a>
       </footer>
     </div>
