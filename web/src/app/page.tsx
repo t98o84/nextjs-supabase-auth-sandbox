@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { UserSchema } from "@/lib/schemas";
 import { createClient } from "@/lib/supabase/server";
+import ClientSupabaseTest from "@/components/ClientSupabaseTest";
 
 export default async function Home() {
   // Demonstrate zod validation
@@ -14,20 +15,20 @@ export default async function Home() {
   // Validate with zod schema
   const validatedUser = UserSchema.parse(exampleUser);
 
-  // Test Supabase connection
+  // Test Supabase server connection
   const supabase = await createClient();
-  let supabaseStatus = "❌ Not connected";
+  let serverSupabaseStatus = "❌ Not connected";
   
   try {
     const { error } = await supabase.from('test').select('*').limit(1);
     if (error) {
       // This is expected if the table doesn't exist - indicates connection is working
-      supabaseStatus = error.code === 'PGRST116' ? "✅ Connected (ready for tables)" : `⚠️ Connected with issue: ${error.message}`;
+      serverSupabaseStatus = error.code === 'PGRST116' ? "✅ Connected (ready for tables)" : `⚠️ Connected with issue: ${error.message}`;
     } else {
-      supabaseStatus = "✅ Connected";
+      serverSupabaseStatus = "✅ Connected";
     }
   } catch (error) {
-    supabaseStatus = `❌ Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+    serverSupabaseStatus = `❌ Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
   }
 
   return (
@@ -71,9 +72,14 @@ export default async function Home() {
             <li>• Client utilities configured ✓</li>
             <li>• Environment variables set ✓</li>
           </ul>
-          <p className="text-xs mt-2 text-gray-600 dark:text-gray-400">
-            Status: {supabaseStatus}
-          </p>
+          <div className="mt-3 space-y-1">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Server-side Status: {serverSupabaseStatus}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Client-side Status: <ClientSupabaseTest />
+            </p>
+          </div>
         </div>
 
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg w-full max-w-md">
@@ -86,7 +92,7 @@ export default async function Home() {
 
         <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
           <li className="mb-2 tracking-[-.01em]">
-            Supabase environment is ready for development.
+            Both client-side and server-side Supabase access verified.
           </li>
           <li className="mb-2 tracking-[-.01em]">
             Start local Supabase with{" "}
